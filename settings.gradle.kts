@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "circutify"
 include(":app")
- 
+include(":core:network")
