@@ -38,5 +38,9 @@ gradlePlugin {
             id = "circutify.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
+        register("androidxSerialization") {
+            id = "circutify.android.serialization"
+            implementationClass = "AndroidSerializationPlugin"
+        }
     }
 }
