@@ -32,6 +32,7 @@ kotlinxSerializationJson = "1.6.0"
 browser = "1.8.0"
 timber = "5.0.1"
 googleSecretPlugin = "2.0.1"
+com-google-android-material-material = "1.11.0"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -90,6 +91,7 @@ junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+material = { group = "com.google.android.material", name = "material", version.ref = "com-google-android-material-material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

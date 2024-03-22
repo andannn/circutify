@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:network"))
+    implementation(project(":core:data"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
