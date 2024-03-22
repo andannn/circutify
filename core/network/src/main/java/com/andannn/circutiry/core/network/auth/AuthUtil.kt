@@ -2,7 +2,7 @@ package com.andannn.circutiry.core.network.auth
 
 import android.content.res.Resources
 import android.net.Uri
-import com.andannn.circutiry.core.network.R
+import com.andannn.circutiry.core.network.BuildConfig
 import io.ktor.http.formUrlEncode
 import io.ktor.http.parameters
 import java.nio.charset.StandardCharsets
@@ -21,11 +21,11 @@ fun Resources.generateAuthorizationUrl(): Pair<Uri, String> {
         url +
             parameters {
                 append("response_type", "code")
-                append("client_id", getString(R.string.CLIENT_ID))
+                append("client_id", BuildConfig.CLIENT_ID)
                 //            append("scope", "scope")
                 append("code_challenge_method", "S256")
                 append("code_challenge", codeChallenge)
-                append("redirect_uri", getString(R.string.REDIRECT_URI))
+                append("redirect_uri", BuildConfig.REDIRECT_URI)
             }.formUrlEncode()
     ).let { Uri.parse(it) } to codeVerifier
 }

@@ -1,6 +1,7 @@
 plugins {
     id("circutify.android.library")
     id("circutify.android.serialization")
+    id(libs.plugins.google.secrets.get().pluginId)
 }
 
 android {
@@ -8,9 +9,6 @@ android {
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        resValue("string", "CLIENT_ID", "c2ec58c8300a4556a6ed7f7be9a49be8")
-        resValue("string", "REDIRECT_URI", "circutify://andannn.circutify.com")
     }
 
     buildTypes {
@@ -22,6 +20,15 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "secrets.defaults.properties"
 }
 
 dependencies {

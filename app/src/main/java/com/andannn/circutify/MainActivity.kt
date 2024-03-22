@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
                 Timber.tag(TAG).d("login success.")
 
                 try {
-                    repo.getToken(resources, code = code, codeVerifier = codeVerifier)
+                    repo.getToken(code = code, codeVerifier = codeVerifier)
                 } catch (e: Exception) {
                     Timber.tag(TAG).e("loginFlow: $e")
                 }
