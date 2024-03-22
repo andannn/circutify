@@ -10,8 +10,7 @@ import io.ktor.client.plugins.resources.get
 internal class SpotifyServiceImpl(
     private val httpClient: HttpClient,
 ) : SpotifyService {
-    override suspend fun getAlbumById(id: String): Album {
-        Log.d("JQN", "getAlbumById: $id")
+    override suspend fun getAlbumById(id: String): Album? {
         return httpClient.get(AlbumRes.Id(id = id)).body()
     }
 }

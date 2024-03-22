@@ -23,8 +23,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         runBlocking {
-            val album = repo.getAlbumById("4aawyAB9vmqN3uQ7FjRGTy")
-            Log.d("JQN", "onCreate: $album")
+            try {
+                val album = repo.getAlbumById("4aawyAB9vmqN3uQ7FjRGTy")
+                Log.d("JQN", "onCreate: $album")
+            }catch (e: Exception) {
+                Log.d("JQN", "onCreate:Exception  $e")
+
+            }
         }
         setContent {
             CircutifyTheme {

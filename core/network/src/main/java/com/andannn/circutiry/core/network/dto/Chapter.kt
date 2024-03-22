@@ -49,6 +49,4 @@ public data class Chapter(
   public val uri: String,
   @SerialName(value = "restrictions")
   public val restrictions: Restrictions,
-  @SerialName(value = "audiobook")
-  public val audiobook: Audiobook,
 )

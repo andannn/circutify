@@ -8,7 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data class Audiobook(
+public data class AudioBook(
   @SerialName(value = "authors")
   public val authors: List<Author>,
   @SerialName(value = "available_markets")
@@ -47,4 +47,6 @@ public data class Audiobook(
   public val uri: String,
   @SerialName(value = "total_chapters")
   public val totalChapters: Double,
+  @SerialName(value = "chapters")
+  public val chapters: Chapters,
 )
