@@ -1,65 +1,62 @@
 package com.andannn.circutify
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.andannn.circutify.ui.theme.CircutifyTheme
-import com.andannn.circutiry.core.network.SpotifyService
-import kotlinx.coroutines.runBlocking
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.lifecycle.lifecycleScope
+import com.andannn.circutiry.core.network.SpotifyAccountService
+import com.andannn.circutiry.core.network.auth.generateAuthorizationUrl
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import timber.log.Timber
+
+private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
-    private val repo by inject<SpotifyService>()
+    private val repo by inject<SpotifyAccountService>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loginFlow()
+    }
 
-        runBlocking {
-            try {
-                val album = repo.getAlbumById("4aawyAB9vmqN3uQ7FjRGTy")
-                Log.d("JQN", "onCreate: $album")
-            }catch (e: Exception) {
-                Log.d("JQN", "onCreate:Exception  $e")
+    private var loginJob: Job? = null
+    private val fallBackEventFlow = MutableSharedFlow<String>(extraBufferCapacity = 1)
 
-            }
-        }
-        setContent {
-            CircutifyTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
-                ) {
-                    Greeting("Android")
+    private fun loginFlow() {
+        loginJob?.cancel()
+        loginJob =
+            lifecycleScope.launch {
+                val (uri, codeVerifier) = resources.generateAuthorizationUrl()
+                CustomTabsIntent.Builder().build()
+                    .launchUrl(this@MainActivity, uri)
+                val code = awaitFallBack()
+                Timber.tag(TAG).d("login success.")
+
+                try {
+                    repo.getToken(resources, code = code, codeVerifier = codeVerifier)
+                } catch (e: Exception) {
+                    Timber.tag(TAG).e("loginFlow: $e")
                 }
             }
-        }
     }
-}
 
-@Composable
-fun Greeting(
-    name: String,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier,
-    )
-}
+    private suspend fun awaitFallBack(): String {
+        return fallBackEventFlow.first()
+    }
 
-@Preview(showBackground = true)
-@Composable
-private fun GreetingPreview() {
-    CircutifyTheme {
-        Greeting("Android")
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        if (intent?.data?.scheme == "circutify") {
+            fallBackEventFlow.tryEmit(
+                intent.data!!.getQueryParameter("code")
+                    ?: error("no parameter **code** in fallback url"),
+            )
+        }
     }
 }

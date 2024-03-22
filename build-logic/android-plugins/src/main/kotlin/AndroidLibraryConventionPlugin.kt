@@ -1,5 +1,6 @@
 import com.andanana.circutify.configureKoinAndroid
 import com.andanana.circutify.configureKotlinAndroid
+import com.andanana.circutify.configureTimberAndroid
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -17,6 +18,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 defaultConfig.targetSdk = 34
                 configureKotlinAndroid(this)
                 configureKoinAndroid(this)
+                configureTimberAndroid(this)
             }
         }
     }

@@ -1,5 +1,6 @@
 import com.andanana.circutify.configureKoinAndroid
 import com.andanana.circutify.configureKotlinAndroid
+import com.andanana.circutify.configureTimberAndroid
 import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -18,6 +19,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
                 configureKotlinAndroid(this)
                 configureKoinAndroid(this)
+                configureTimberAndroid(this)
             }
         }
     }

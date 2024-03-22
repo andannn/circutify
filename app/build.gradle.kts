@@ -37,4 +37,5 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     api(libs.androidx.compose.material3)
+    implementation(libs.androidx.browser)
 }

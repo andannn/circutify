@@ -8,6 +8,9 @@ android {
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        resValue("string", "CLIENT_ID", "c2ec58c8300a4556a6ed7f7be9a49be8")
+        resValue("string", "REDIRECT_URI", "circutify://andannn.circutify.com")
     }
 
     buildTypes {
