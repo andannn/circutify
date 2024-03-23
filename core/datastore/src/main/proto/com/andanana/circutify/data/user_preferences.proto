@@ -1,0 +1,15 @@
+
+syntax = "proto3";
+
+option java_package = "com.andannn.circutify.core.datastore";
+option java_multiple_files = true;
+
+message AccessToken {
+  string accessToken = 1;
+  int32 expiresIn = 2;
+  string refreshToken = 3;
+}
+
+message CircutifyPreferences {
+    AccessToken access_token = 1;
+}

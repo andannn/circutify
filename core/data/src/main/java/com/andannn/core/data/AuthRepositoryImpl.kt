@@ -1,6 +1,7 @@
 package com.andannn.core.data
 
 import android.net.Uri
+import com.andannn.circutify.core.datastore.CircutifyDataStore
 import com.andannn.circutiry.core.network.SpotifyAccountService
 import com.andannn.circutiry.core.network.auth.generateAuthorizationUrl
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,6 +12,7 @@ private const val TAG = "AuthRepositoryImpl"
 
 internal class AuthRepositoryImpl(
     private val service: SpotifyAccountService,
+    private val dataStore: CircutifyDataStore,
 ) : AuthRepository {
     private val fallBackEventFlow = MutableSharedFlow<String>(extraBufferCapacity = 1)
 
@@ -24,9 +26,14 @@ internal class AuthRepositoryImpl(
         return try {
             val accessToken = service.getToken(code = code, codeVerifier = codeVerifier)
 
+            dataStore.setAccessToken(
+                accessToken = accessToken.accessToken,
+                expiresIn = accessToken.expiresIn,
+                refreshToken = accessToken.refreshToken,
+            )
             LoginResult.Success
         } catch (e: Exception) {
-            Timber.tag(TAG).e("loginFlow: $e")
+            Timber.tag(TAG).e("loginFlow: failed $e")
             LoginResult.Failed(e)
         }
     }

@@ -18,3 +18,4 @@ rootProject.name = "circutify"
 include(":app")
 include(":core:network")
 include(":core:data")
+include(":core:datastore")
