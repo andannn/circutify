@@ -6,8 +6,12 @@ import kotlinx.coroutines.flow.firstOrNull
 class CircutifyDataStoreImpl(
     private val dataStore: DataStore<CircutifyPreferences>,
 ) : CircutifyDataStore {
-    override suspend fun getAccessToken(): AccessToken? {
-        return dataStore.data.firstOrNull()?.accessTokenOrNull
+    override suspend fun getAccessToken(): String? {
+        return dataStore.data.firstOrNull()?.accessTokenOrNull?.accessToken
+    }
+
+    override suspend fun getRefreshToken(): String? {
+        return dataStore.data.firstOrNull()?.accessTokenOrNull?.refreshToken
     }
 
     override suspend fun setAccessToken(

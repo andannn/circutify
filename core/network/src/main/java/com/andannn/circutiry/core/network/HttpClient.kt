@@ -1,5 +1,6 @@
 package com.andannn.circutiry.core.network
 
+import com.andannn.circutify.core.datastore.CircutifyDataStore
 import com.andannn.circutiry.core.network.exceptions.ErrorDto
 import com.andannn.circutiry.core.network.exceptions.NetworkException
 import com.andannn.circutiry.core.network.exceptions.toSpotifyException
@@ -10,6 +11,9 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.engine.okhttp.OkHttpConfig
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -24,23 +28,27 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "HttpClient"
 
-internal val spotifyResourceClient =
-    HttpClient(OkHttp) {
-        commonConfig("api.spotify.com")
-        defaultRequest {
-            url("https://api.spotify.com/v1")
+internal val spotifyResourceClientBuilder: (dataStore: CircutifyDataStore) -> HttpClient =
+    { dataStore ->
+        HttpClient(OkHttp) {
+            commonConfig(dataStore)
+            defaultRequest {
+                url("https://api.spotify.com/v1")
+            }
         }
     }
 
-internal val spotifyAccountClient =
-    HttpClient(OkHttp) {
-        commonConfig("accounts.spotify.com")
-        defaultRequest {
-            url("https://accounts.spotify.com")
+internal val spotifyAccountClientBuilder: (dataStore: CircutifyDataStore) -> HttpClient =
+    { dataStore ->
+        HttpClient(OkHttp) {
+            commonConfig(dataStore)
+            defaultRequest {
+                url("https://accounts.spotify.com")
+            }
         }
     }
 
-fun HttpClientConfig<OkHttpConfig>.commonConfig(host: String) {
+fun HttpClientConfig<OkHttpConfig>.commonConfig(dataStore: CircutifyDataStore) {
     expectSuccess = true
 
     install(Logging) {
@@ -51,9 +59,6 @@ fun HttpClientConfig<OkHttpConfig>.commonConfig(host: String) {
                 }
             }
         level = LogLevel.BODY
-        filter { request ->
-            request.url.host.contains(host)
-        }
         sanitizeHeader { header -> header == HttpHeaders.Authorization }
     }
     install(Resources)
@@ -63,6 +68,19 @@ fun HttpClientConfig<OkHttpConfig>.commonConfig(host: String) {
                 prettyPrint = true
             },
         )
+    }
+    install(Auth) {
+        bearer {
+            loadTokens {
+                val accessToken = dataStore.getAccessToken()
+                val refreshToken = dataStore.getRefreshToken()
+                if (accessToken != null && refreshToken != null) {
+                    BearerTokens(accessToken, refreshToken)
+                } else {
+                    null
+                }
+            }
+        }
     }
 
     engine {

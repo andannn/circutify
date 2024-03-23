@@ -6,16 +6,27 @@ import androidx.activity.ComponentActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.lifecycleScope
 import com.andannn.core.data.AuthRepository
+import com.andannn.core.data.ResourceRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import timber.log.Timber
+
+private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
-    private val repo by inject<AuthRepository>()
+    private val authRepo by inject<AuthRepository>()
+    private val resourceRepo by inject<ResourceRepository>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onLoginButtonClick()
+//        onLoginButtonClick()
+
+        lifecycleScope.launch {
+            resourceRepo.getAlbumById("4aawyAB9vmqN3uQ7FjRGTy").also {
+                Timber.tag(TAG).d("onCreate: $it")
+            }
+        }
     }
 
     private var loginJob: Job? = null
@@ -24,7 +35,7 @@ class MainActivity : ComponentActivity() {
         loginJob?.cancel()
         loginJob =
             lifecycleScope.launch {
-                repo.loginFlow {
+                authRepo.loginFlow {
                     CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, it)
                 }
             }
@@ -34,7 +45,7 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
 
         if (intent?.data?.scheme == "circutify") {
-            repo.notifyLoginFailedBack(
+            authRepo.notifyLoginFailedBack(
                 intent.data!!.getQueryParameter("code")
                     ?: error("no parameter **code** in fallback url"),
             )
