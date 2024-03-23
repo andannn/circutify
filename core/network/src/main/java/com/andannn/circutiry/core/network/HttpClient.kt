@@ -33,7 +33,7 @@ internal val spotifyResourceClientBuilder: (dataStore: CircutifyDataStore) -> Ht
         HttpClient(OkHttp) {
             commonConfig(dataStore)
             defaultRequest {
-                url("https://api.spotify.com/v1")
+                url("https://api.spotify.com/v1/")
             }
         }
     }

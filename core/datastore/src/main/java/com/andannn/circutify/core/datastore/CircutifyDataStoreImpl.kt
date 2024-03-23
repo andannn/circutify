@@ -21,11 +21,12 @@ class CircutifyDataStoreImpl(
     ) {
         dataStore.updateData { preference ->
             preference.copy {
-                this.accessToken.copy {
-                    this.accessToken = accessToken
-                    this.expiresIn = expiresIn
-                    this.refreshToken = refreshToken
-                }
+                this.accessToken =
+                    this.accessToken.copy {
+                        this.accessToken = accessToken
+                        this.expiresIn = expiresIn
+                        this.refreshToken = refreshToken
+                    }
             }
         }
     }

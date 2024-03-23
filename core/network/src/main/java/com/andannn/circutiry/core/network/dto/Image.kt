@@ -1,16 +1,16 @@
 package com.andannn.circutiry.core.network.dto
 
-import kotlin.Double
-import kotlin.String
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.Int
+import kotlin.String
 
 @Serializable
 public data class Image(
-  @SerialName(value = "url")
-  public val url: String,
-  @SerialName(value = "height")
-  public val height: Double,
-  @SerialName(value = "width")
-  public val width: Double,
+    @SerialName(value = "height")
+    public val height: Int,
+    @SerialName(value = "url")
+    public val url: String,
+    @SerialName(value = "width")
+    public val width: Int,
 )

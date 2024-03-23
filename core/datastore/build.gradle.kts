@@ -1,5 +1,6 @@
 plugins {
     id("circutify.android.library")
+    id("circutify.android.testing")
     alias(libs.plugins.protobuf)
 }
 
