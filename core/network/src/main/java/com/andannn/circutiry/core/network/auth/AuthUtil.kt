@@ -1,6 +1,5 @@
 package com.andannn.circutiry.core.network.auth
 
-import android.content.res.Resources
 import android.net.Uri
 import com.andannn.circutiry.core.network.BuildConfig
 import io.ktor.http.formUrlEncode
@@ -11,7 +10,7 @@ import java.security.SecureRandom
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
-fun Resources.generateAuthorizationUrl(): Pair<Uri, String> {
+fun generateAuthorizationUrl(): Pair<Uri, String> {
     val codeVerifier = generateRandomString(64)
     val hashed = sha256(codeVerifier)
     val codeChallenge = base64encode(hashed)

@@ -23,4 +23,5 @@ android {
 
 dependencies {
     implementation(project(":core:network"))
+    implementation(libs.androidx.browser)
 }

@@ -5,55 +5,36 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.lifecycleScope
-import com.andannn.circutiry.core.network.SpotifyAccountService
-import com.andannn.circutiry.core.network.auth.generateAuthorizationUrl
+import com.andannn.core.data.AuthRepository
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import timber.log.Timber
-
-private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
-    private val repo by inject<SpotifyAccountService>()
+    private val repo by inject<AuthRepository>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loginFlow()
+        onLoginButtonClick()
     }
 
     private var loginJob: Job? = null
-    private val fallBackEventFlow = MutableSharedFlow<String>(extraBufferCapacity = 1)
 
-    private fun loginFlow() {
+    private fun onLoginButtonClick() {
         loginJob?.cancel()
         loginJob =
             lifecycleScope.launch {
-                val (uri, codeVerifier) = resources.generateAuthorizationUrl()
-                CustomTabsIntent.Builder().build()
-                    .launchUrl(this@MainActivity, uri)
-                val code = awaitFallBack()
-                Timber.tag(TAG).d("login success.")
-
-                try {
-                    repo.getToken(code = code, codeVerifier = codeVerifier)
-                } catch (e: Exception) {
-                    Timber.tag(TAG).e("loginFlow: $e")
+                repo.loginFlow {
+                    CustomTabsIntent.Builder().build().launchUrl(this@MainActivity, it)
                 }
             }
-    }
-
-    private suspend fun awaitFallBack(): String {
-        return fallBackEventFlow.first()
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
         if (intent?.data?.scheme == "circutify") {
-            fallBackEventFlow.tryEmit(
+            repo.notifyLoginFailedBack(
                 intent.data!!.getQueryParameter("code")
                     ?: error("no parameter **code** in fallback url"),
             )
